@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacman</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #grid {
+            margin-top: 30px;
+            letter-spacing: 0.5em;
+            font-size: 2em;
+        }
+
+        .cell {
+            display: inline-block;
+            padding: 20px;
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            margin: 0px;
+            vertical-align: middle;
+        }
+
+        img {
+            height: 30px
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick=movePacMan()>Move Pacman (Hunt Ghosts)</button>
+    <div id="grid"></div>
+</body>
+<script>
+
+    let cellChar = '<div class=cell></div>'
+    let ghostChar = '<div class=cell><img src="https://cdn3.iconfinder.com/data/icons/venus-basic-2/48/001_093_ghost_games_pacman-256.png"></div>'
+    let pacManChar = '<div class=cell><img src="https://cdn2.iconfinder.com/data/icons/object-other/64/pacman-256.png"></div>'
+
+    // create the grid
+    let grid = [
+        [cellChar, cellChar, cellChar, cellChar, cellChar],
+        [cellChar, cellChar, cellChar, cellChar, cellChar],
+        [cellChar, cellChar, cellChar, cellChar, cellChar],
+        [cellChar, cellChar, cellChar, cellChar, cellChar],
+        [cellChar, cellChar, cellChar, cellChar, cellChar]
+    ]
+    2
+    // scatter some ghosts in the grid
+    grid[4][1] = ghostChar
+    grid[4][2] = ghostChar
+    grid[0][0] = ghostChar
+    grid[0][2] = ghostChar
+    grid[1][1] = ghostChar
+    grid[1][2] = ghostChar
+    grid[2][1] = ghostChar
+
+    // drop in Pacman
+    grid[2][4] = pacManChar
+    currentPacmanCoord = { y: 2, x: 4 }
+
+    // print the grid
+    printGrid();
+
+    function printGrid() {
+        let gridString = ""
+        for (let y = 0; y < grid.length; y++) {
+            for (let x = 0; x < grid[y].length; x++) {
+                gridString = gridString + grid[y][x]
+            }
+            gridString = gridString + "<br>"
+        }
+        document.getElementById('grid').innerHTML = gridString
+    }
+
+    function movePacMan() {
+        let ghostCoordinate = senseGhost(currentPacmanCoord)
+        if (ghostCoordinate != null) {
+            // ghost was detectd, move pacman to ghost position
+            newCoordinate = ghostCoordinate;
+        } else {
+            // no ghost was detected in vicinity so move pacMan randomly
+            let validCoordinate = false;
+            let xChange = 0;
+            let yChange = 0;
+            while (validCoordinate == false) {
+                let randomNumber = Math.random();
+                if (randomNumber < .25) {
+                    //up
+                    yChange = -1;
+                } else if (randomNumber < .50) {
+                    //right
+                    xChange = 1;
+                } else if (randomNumber < .75) {
+                    //down
+                    yChange = 1;
+                } else {
+                    //left
+                    xChange = -1;
+                }
+                validCoordinate = confirmValidCoord(currentPacmanCoord.y + yChange, currentPacmanCoord.x + xChange)
+            }
+            newCoordinate = { y: currentPacmanCoord.y + yChange, x: currentPacmanCoord.x + xChange }
+        }
+        //replace existing position of pacManChar with cellChar 
+        grid[currentPacmanCoord.y][currentPacmanCoord.x] = cellChar
+        //move pacManChar to location determined by senseGhost function or random assignment above
+        currentPacmanCoord = newCoordinate
+        grid[currentPacmanCoord.y][currentPacmanCoord.x] = pacManChar
+        printGrid()
+    }
+
+    // function determines whether coordinates are in the grid, returns true or false
+    function confirmValidCoord(y, x) {
+        if (y > -1 && y < grid.length) {
+            if (x > -1 && x < grid[0].length) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    // This function determines the location of a ghost if adjacent to Pacman
+    function senseGhost(currentPacmanCoord) {
+        // Scan cells adjacent to Pacman for ghosts
+        // If a ghost is detected by the scan return the ghost's coordinates. 
+        // Otherwise return null.
+
+        // TODO:  After studying the videos write the code that will
+        // execute this function.  
+    }
+
+
+</script>
+
+</html>
